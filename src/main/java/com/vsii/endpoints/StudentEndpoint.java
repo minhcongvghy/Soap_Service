@@ -2,7 +2,9 @@ package com.vsii.endpoints;
 
 import com.vsii.gs_ws.*;
 import com.vsii.model.Student;
+import com.vsii.model.StudentView;
 import com.vsii.service.IStudentService;
+import com.vsii.service.IStudentViewService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -19,6 +21,8 @@ public class StudentEndpoint {
     private static final String NAMESPACE_URI = "http://www.vsii.com/student-ws";
     @Autowired
     private IStudentService studentService;
+    @Autowired
+    private IStudentViewService studentViewService;
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getStudentByIdRequest")
     @ResponsePayload
@@ -27,6 +31,15 @@ public class StudentEndpoint {
         StudentInfo studentInfo = new StudentInfo();
         BeanUtils.copyProperties(studentService.getStudentById(request.getStudentId()), studentInfo);
         response.setStudentInfo(studentInfo);
+        return response;
+    }
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getStudentViewByIdRequest")
+    @ResponsePayload
+    public GetStudentViewByIdResponse getStudentView(@RequestPayload GetStudentViewByIdRequest request) {
+        GetStudentViewByIdResponse response = new GetStudentViewByIdResponse();
+        StudentViewInfo studentViewInfo = new StudentViewInfo();
+        BeanUtils.copyProperties(studentViewService.getStudentViewById(request.getStudentViewId()), studentViewInfo);
+        response.setStudentViewInfo(studentViewInfo);
         return response;
     }
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getAllStudentsRequest")
@@ -60,6 +73,28 @@ public class StudentEndpoint {
             StudentInfo studentInfo = new StudentInfo();
             BeanUtils.copyProperties(student, studentInfo);
             response.setStudentInfo(studentInfo);
+            serviceStatus.setStatusCode("SUCCESS");
+            serviceStatus.setMessage("Content Added Successfully");
+            response.setServiceStatus(serviceStatus);
+        }
+        return response;
+    }
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "addStudentViewRequest")
+    @ResponsePayload
+    public AddStudentViewResponse addStudentView(@RequestPayload AddStudentViewRequest request) {
+        AddStudentViewResponse response = new AddStudentViewResponse();
+        ServiceStatus serviceStatus = new ServiceStatus();
+        StudentView studentView = new StudentView();
+        studentView.setNameView(request.getNameView());
+        boolean flag = studentViewService.addStudentView(studentView);
+        if (flag == false) {
+            serviceStatus.setStatusCode("CONFLICT");
+            serviceStatus.setMessage("Content Already Available");
+            response.setServiceStatus(serviceStatus);
+        } else {
+            StudentViewInfo studentViewInfo = new StudentViewInfo();
+            BeanUtils.copyProperties(studentView, studentViewInfo);
+            response.setStudentViewInfo(studentViewInfo);
             serviceStatus.setStatusCode("SUCCESS");
             serviceStatus.setMessage("Content Added Successfully");
             response.setServiceStatus(serviceStatus);

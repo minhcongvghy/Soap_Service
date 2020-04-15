@@ -1,6 +1,41 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.vsii.com/student-ws"
            targetNamespace="http://www.vsii.com/student-ws" elementFormDefault="qualified">
 
+    <xs:element name="getStudentViewByIdRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="studentViewId" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getStudentViewByIdResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="studentViewInfo" type="tns:studentViewInfo"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="studentViewInfo">
+        <xs:sequence>
+            <xs:element name="studentViewId" type="xs:long"/>
+            <xs:element name="nameView" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="addStudentViewRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="nameView" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="addStudentViewResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="serviceStatus" type="tns:serviceStatus"/>
+                <xs:element name="studentViewInfo" type="tns:studentViewInfo"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="getStudentByIdRequest">
         <xs:complexType>
             <xs:sequence>
